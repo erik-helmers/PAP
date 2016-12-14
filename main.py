@@ -9,7 +9,7 @@ else:
 
 
 
-__funcs_screen = ["toggle_fullscreen", "end_fullscreen","switch_fullscreen", "leave", "background", "getScreen", "update", "c_empty", "c_undo"]
+    __funcs_screen = ["toggle_fullscreen", "end_fullscreen","switch_fullscreen", "leave", "background", "getScreen", "update", "c_empty", "c_undo"]
 __funcs_pen = ["cercle", "forward", "rotate", "left", "right", "undo", "empty", "setColor"]
 
 class PAP_Error(Exception):
@@ -21,7 +21,14 @@ class PAP_Error(Exception):
 class Terminated(Exception):
     def __init__(self): pass
     def __str__(self):
-        return repr("\n\n\nLa fenêtre a été fermée. Les commandes sont désactivées.\n\n\n")
+        print("==================\n\
+\
+\
+La fenêtre a été fermée. Les commandes sont désactivées.\
+\n\
+============================\
+")
+        return ""
 
 def debug(s, t="ALL"):
     try:
@@ -96,16 +103,16 @@ class Screen:
     def getScreen(self): return self
     
     def update(self):
-        self.tk.grab_set()
-        self.tk.focus_set()
         self.canvas.update()
 
     def c_empty(self): return self.canvas.find_all()==()
     def c_undo(self):
         try:
             self.canvas.delete(self.canvas.find_all()[-1])
-        except: pass
-        self.update()
+            self.update()
+            return True
+        except: return False
+        
 class __Head_Navigator:  #Implementation de la gestion des positions
 
     def __init__(self, pos=(0,0), dire = 0):
@@ -142,6 +149,7 @@ class __Item_Change_Buffer:
     def add(self, item):
         if len(self.buff)==self.size: self.buff.pop(0)
         self.buff.append(item)
+
 
 
 class Navigator(__Head_Navigator):
