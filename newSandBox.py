@@ -59,14 +59,14 @@ def _get_word(line, pos):
     while 0<=posFin<len(line) and goodChar(line[posFin]): posFin+=1
 
     word = line[posDeb+1:posFin]
-
-    if breakChar(word[0]):
-        word = word[1::1]
-        posDeb += 1
-    if breakChar(word[-1]):
-        word = word[0:-1]
-        posFin -= 1
-
+    try:
+        if breakChar(word[0]):
+            word = word[1::1]
+            posDeb += 1
+        if breakChar(word[-1]):
+            word = word[0:-1]
+            posFin -= 1
+    except IndexError: pass
     for ix, x in enumerate(word):
         if not goodChar(x):
             return ((word[0:ix], _get_string_index(pos[0], posDeb+1),
@@ -187,18 +187,13 @@ class T(ModifiedMixin, Text):
 
             if len(word) in _built_in_funcs_name.keys():
                 if word in _built_in_funcs_name[len(word)]:
-                    print("aaaa")
                     self.tag_add("built_in_funcs_name", deb, fin)
                     self.update()
             else: self.tag_remove("built_in_funcs_name", deb, fin)
             
             if len(word) in _key_words_name.keys():
                 if word in _key_words_name[len(word)]:
-                    print("bbbbb")
                     self.tag_add("key_words_name", deb, fin)
                     self.update()
             else: self.tag_remove("key_words_name", deb, fin)
                 
-t = T()
-t.pack(expand=1, fill=BOTH)
-t.mainloop()
