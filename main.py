@@ -8,9 +8,11 @@ else:
 
 
 
-
     __funcs_screen = ["toggle_fullscreen", "end_fullscreen","switch_fullscreen", "leave", "background", "getScreen", "update", "c_empty", "c_undo"]
 __funcs_pen = ["cercle", "forward", "rotate", "left", "right", "undo", "empty", "setColor"]
+
+
+ALL_FUNCS_NAME = __funcs_screen + __funcs_pen
 
 class PAP_Error(Exception):
     def __init__(self, value):
