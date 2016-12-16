@@ -7,8 +7,7 @@ else:
     from tkinter import *
 
 
-
-    __funcs_screen = ["toggle_fullscreen", "end_fullscreen","switch_fullscreen", "leave", "background", "getScreen", "update", "c_empty", "c_undo"]
+__funcs_screen = ["toggle_fullscreen", "end_fullscreen","switch_fullscreen", "leave", "background", "getScreen", "update", "c_empty", "c_undo"]
 __funcs_pen = ["cercle", "forward", "rotate", "left", "right", "undo", "empty", "setColor"]
 
 

@@ -7,9 +7,33 @@ from  main import ALL_FUNCS_NAME
 from tkinter import Text, BOTH
 from tkinter import *
 
+_built_in_funcs_name = {2: ['id'],
+                        3: ['abs', 'all', 'any', 'bin', 'chr', 'cmp', 'dir',
+                            'hex', 'int', 'len', 'map', 'max', 'min', 'oct', 'ord',
+                            'pow', 'set', 'str', 'sum', 'zip'],
+                        4: ['bool', 'dict',
+                            'eval', 'file', 'hash', 'help', 'iter', 'list', 'long', 'next',
+                            'open', 'repr', 'type', 'vars'],
+                        5: ['float', 'input', 'print', 'range', 'round', 'slice',
+                            'super', 'tuple'],
+                        6: ['divmod', 'filter', 'format','locals', 'object',
+                            'reduce', 'reload', 'sorted', 'unichr', 'xrange'],
+                        7: ['compile', 'complex', 'delattr', 'getattr',
+                            'globals', 'hasattr', 'setattr', 'unicode'],
+                        8: ['callable', 'execfile', 'property', 'reversed'],
+                        9: ['bytearray', 'enumerate', 'frozenset', 'raw_input'],
+                        10: ['__import__', 'basestring', 'isinstance',
+                             'issubclass', 'memoryview'],
+                        11: ['classmethod'], 12: ['staticmethod']}
 
+_key_words_name = {2: ['as', 'or', 'if', 'in', 'is'],
+                   3: ['and', 'del', 'not', 'def', 'for', 'try'],
+                   4: ['from', 'elif', 'with', 'else', 'pass', 'exec'],
+                   5: ['while', 'yield', 'break', 'print', 'class', 'raise'],
+                   6: ['global', 'assert', 'except', 'import', 'return', 'lambda'],
+                   7: ['finally'], 8: ['continue']}
 goodChar = lambda x: x.isalpha() or x.isdigit()
-breakChar = lambda x: x in [",", ".", "'", "(", ")", ";", " "]
+breakChar = lambda x: x in [",", ".", "'", "(", ")", ";", " ", ":"]
 
 def _get_int_index(index):
     return list(map(int, index.split(".")))
@@ -137,23 +161,44 @@ class T(ModifiedMixin, Text):
         self._init()
 
         #Initialize the tags
-        self.tag_config("pap_funcs_name", foreground="#ff0000", fg="gray75")
-        
+        self.tag_config("pap_funcs_name", foreground="#ff0000", fg="gray75",
+                        wrap=NONE)
+        self.tag_config("built_in_funcs_name", foreground="blue",
+                        wrap=NONE)
+        self.tag_config("key_words_name", foreground = "green",
+                        wrap=NONE)
     def beenModified(self, event=None):
         '''
         Override this method do do work when the Text is modified.
         '''
         words  =  _get_word(self.get("insert linestart", "insert lineend"),
                                   self.index("insert"))
-
+        
         if words == "not_found" : return 
-
+        
         for word, deb, fin in words:
             if word in ALL_FUNCS_NAME:
                 self.tag_add("pap_funcs_name", deb, fin)
+                self.tag_remove("built_in_funcs_name", deb, fin)
+                self.tag_remove("key_words_name", deb, fin) 
                 self.update()
             else:
                 self.tag_remove("pap_funcs_name",deb, fin)
+
+            if len(word) in _built_in_funcs_name.keys():
+                if word in _built_in_funcs_name[len(word)]:
+                    print("aaaa")
+                    self.tag_add("built_in_funcs_name", deb, fin)
+                    self.update()
+            else: self.tag_remove("built_in_funcs_name", deb, fin)
+            
+            if len(word) in _key_words_name.keys():
+                if word in _key_words_name[len(word)]:
+                    print("bbbbb")
+                    self.tag_add("key_words_name", deb, fin)
+                    self.update()
+            else: self.tag_remove("key_words_name", deb, fin)
+                
 t = T()
 t.pack(expand=1, fill=BOTH)
 t.mainloop()
