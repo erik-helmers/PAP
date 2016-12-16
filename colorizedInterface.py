@@ -7,6 +7,7 @@ from  main import ALL_FUNCS_NAME
 from tkinter import Text, BOTH
 from tkinter import *
 
+
 _built_in_funcs_name = {2: ['id'],
                         3: ['abs', 'all', 'any', 'bin', 'chr', 'cmp', 'dir',
                             'hex', 'int', 'len', 'map', 'max', 'min', 'oct', 'ord',
@@ -28,10 +29,12 @@ _built_in_funcs_name = {2: ['id'],
 
 _key_words_name = {2: ['as', 'or', 'if', 'in', 'is'],
                    3: ['and', 'del', 'not', 'def', 'for', 'try'],
-                   4: ['from', 'elif', 'with', 'else', 'pass', 'exec'],
-                   5: ['while', 'yield', 'break', 'print', 'class', 'raise'],
+                   4: ['from','True','None', 'elif', 'with', 'else', 'pass', 'exec'],
+                   5: ['while', 'False', 'yield', 'break', 'print', 'class', 'raise'],
                    6: ['global', 'assert', 'except', 'import', 'return', 'lambda'],
                    7: ['finally'], 8: ['continue']}
+
+
 goodChar = lambda x: x.isalpha() or x.isdigit()
 breakChar = lambda x: x in [",", ".", "'", "(", ")", ";", " ", ":"]
 
@@ -78,7 +81,7 @@ def _get_word(line, pos):
                           _get_string_index(pos[0], posFin)),)
     else: return((word, [pos[0], posDeb+1], [pos[1], posFin]),)
 
-class ModifiedMixin:
+class __ModifiedMixin:
     '''
     Class to allow a Tkinter Text widget to notice when it's modified.
 
@@ -147,7 +150,7 @@ class ModifiedMixin:
 
 
 
-class T(ModifiedMixin, Text):
+class colorizedText(__ModifiedMixin, Text):
     '''
     Subclass both ModifiedMixin and Tkinter.Text.
     '''
@@ -196,4 +199,8 @@ class T(ModifiedMixin, Text):
                     self.tag_add("key_words_name", deb, fin)
                     self.update()
             else: self.tag_remove("key_words_name", deb, fin)
-                
+
+if __name__=="__main__":
+    root = Tk()
+    colorizedText(root).pack(expand=1, fill=BOTH)
+    root.mainloop()
