@@ -8,9 +8,8 @@ FUNCS_HEADER = """\
 from main import *
 import main
 import time
-forward(60)\n"""
-
-import main
+_Screen = screen
+"""
 
 
 def doIT(event=None):
@@ -26,4 +25,3 @@ entry.pack(side=LEFT, expand=1, fill=Y)
 entry.bind("<F5>", doIT)
 screen = Screen(root)
 root.mainloop()
-diane.kalloiswong@gmail.com
