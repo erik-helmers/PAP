@@ -1,0 +1,41 @@
+        MAIN.
+
+Ce module s'appelle main par manque d'inspiration.
+Il devra etre renommé pour des raisons pratiques
+et empecher des *mot*.
+
+ALL_FUNCS_NAME : liste réunissant tout les noms de fonctions
+
+Screen : classe initialisée, soit sans arguments, et s'autogérera
+         soit avec, et dans ce cas est crée dans la frame
+
+
+         reset : fonction sans argument qui efface le dessin.
+         switch_fullscreen: change l'état de plein écran a fenetré
+         leave: fonction appellée quand la fenetre est quittée
+         __reconfig__: appelle lors du changement de dimensions de
+                      la fenetre et permet le centrage du dessin.
+         background: prend en argument une couleur et la met en
+                     fond d'écran du canvas.
+
+                     #TODO: gestion RGB, francais
+
+         getScreen: retourne l'écran
+         update : rafraichit l'écran
+
+         c_empty : vrai si le buffer est vide
+         c_undo : enleve un element du buffer et retourne vrai
+                  si le buffer est vide retourne faux
+
+
+Navigator : tete d'écriture
+
+
+            link : autre, couleur, epaisseur : prend un
+                   autre navigator en argument et trace
+                   un trait entre les deux dans la couleur
+                   et l'épaisseur spécifiée ou par défaut
+            forward : x : avance de x pixel dans la direction
+                          de Navigator
+
+            
