@@ -1,8 +1,10 @@
-# PAP
+# Vesanie-Non-Dispendieuse-
 
-This module is a LOGO like programmation app.
-It has a IDE, with syntaxic coloration, etc...
 
-It already has about 1000 lines of codes which are 
-partially commented. But at therm it will be
-fully commented.
+Vésanie : déreglement d'esprit, folie 
+Dispendieux : Qui exige beaucoup de dépense, entraîne de grands frais
+Voila, voila...
+
+This module is a turtle like with less functionnalities. lol.
+
+YOLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOoo

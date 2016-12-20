@@ -7,11 +7,12 @@ else:
     from tkinter import *
 
 
-__funcs_screen = ["toggle_fullscreen", "end_fullscreen","switch_fullscreen", "leave", "background", "getScreen", "update", "c_empty", "c_undo"]
-__funcs_pen = ["cercle", "forward", "rotate", "left", "right", "undo", "empty", "setColor"]
+__funcs_screen = ["background", "getScreen", "update", "c_empty", "c_undo"]
+__funcs_pen = ["cercle", "forward", "rotate", "left", "right", "undo",
+               "empty", "setColor"]
 
 
-ALL_FUNCS_NAME = __funcs_screen + __funcs_pen
+ALL_FUNCS_NAME = __funcs_screen + __funcs_pen + ["init", "reset"]
 
 class PAP_Error(Exception):
     def __init__(self, value):
@@ -22,12 +23,12 @@ class PAP_Error(Exception):
 class Terminated(Exception):
     def __init__(self): pass
     def __str__(self):
-        print("==================\n\
+        print("========================================================\n\
 \
 \
 La fenêtre a été fermée. Les commandes sont désactivées.\
 \n\
-============================\
+========================================================\
 ")
         return ""
 
@@ -38,59 +39,55 @@ def debug(s, t="ALL"):
     except KeyError: print("Unknown type %s, passing debug" %(t)); print(s)
 
 
-    
-class Screen:
+
+class Screen(Frame):
 
     __name__ = "Screen"
 
-    def __init__(self, root=None):
+    __count__ = 0
+    
+    def __init__(self, *args, **kwargs):
 
+            
+        # ============================================= INITIALISATION ========================================
         
-        #Parametres de FullScreen
-        self.fullscreen = FULLSCREEN
+        if args==():self.master = Tk(); self.isFrame = False #Permet l'importation de la fenetre en tant que frame
+        else:                                               #ou en tant que standalone.
+            self.isFrame = True
+            Frame.__init__(self, *args, **kwargs)
+            self.frame = self
+            self.master = args[0]
+            print("hello", self.frame)
+        
+        # =============================================== BINDING =============================================
 
-        if root==None:self.tk = Tk() #Permet l'importation de la fenetre en tant que frame
-        else: self.tk = root        #ou en tant que standalone.
+        # Ce Bind est primordial afin de pouvoir centrer continuelement l'image
+        # et ne pas étendre le canvas vers un côté précis.
         
-        self.frame = Frame(self.tk)
-        self.frame.pack()
-        
-        #Binding 
-        self.tk.bind("<F11>", self.toggle_fullscreen)
-        self.tk.bind("<Escape>", self.end_fullscreen)
-        self.tk.bind("<Configure>", self.__reconfig__)
-        
-        self.tk.protocol("WM_DELETE_WINDOW", self.leave)
-        
-        if FULLSCREEN :self.toggle_fullscreen()
-        
-        self.canvas = Canvas(self.tk, width = 800, height = 800, bg="white")
-        self.canvas.pack(expand=True, fill='both')
+        self.master.bind("<Configure>", self.__reconfig__)
 
+
+        # =============================================== CANVAS ==============================================
+        
+        self.canvas = Canvas(self.getRoot(), bg="orange")
+        self.canvas.grid(sticky = W+E+N+S)
+
+        self.getRoot().grid_rowconfigure(0, weight=1)
+        self.getRoot().grid_columnconfigure(0, weight=1)
+
+        # ================================================ ID =================================================
+        
+        Screen.__count__ += 1
+        self.id = "Screen_"+str(Screen.__count__)
+
+
+    def getRoot(self):
+        if self.isFrame: return self.frame
+        else: return self.master
+    
     def reset(self):
         self.canvas.delete(ALL)
         self.update()
-            
-    def toggle_fullscreen(self, event=None):
-        self.state = True  # Just toggling the boolean
-        self.tk.attributes("-fullscreen", self.state)
-        return "done"
-    
-    def end_fullscreen(self, event=None):
-        self.state = False
-        self.tk.attributes("-fullscreen", self.state)
-        return "done"
-
-    def switch_fullscreen(self):
-        self.state = not self.state
-        self.tk.attributes("-fullscreen", self.state)
-        return self.state
-
-    
-    def leave(self, event=None):
-        if not CONFIRM_QUIT or messagebox.askyesno("Quitter", "Voulez-vous vraiment quitter ? #Tristesse"):
-            self.tk.destroy()
-        raise Terminated
         
     def __reconfig__(self, event):
         x, y = event.width//2, event.height//2
@@ -102,7 +99,7 @@ class Screen:
         else: self.canvas.config(background=color)
         
     def getScreen(self): return self
-    
+
     def update(self):
         self.canvas.update()
 
@@ -113,7 +110,11 @@ class Screen:
             self.update()
             return True
         except: return False
-        
+
+    def __repr__(self):
+        output = {"id":self.id, "items_in_canvas":len(self.canvas.find_all())}
+        return str(output)
+
 class __Head_Navigator:  #Implementation de la gestion des positions
 
     def __init__(self, pos=(0,0), dire = 0):
@@ -170,7 +171,7 @@ class Navigator(__Head_Navigator):
         self.show()
         
     def link(self, other, couleur="black", epaisseur=LINE_WIDTH):
-        debug(*_HN.get(self)[0], *_HN.get(other)[0])
+        debug((*_HN.get(self)[0], *_HN.get(other)[0]))
         self.w.canvas.create_line(*_HN.get(self)[0], *_HN.get(other)[0],  width=epaisseur,
                                   smooth=0, fill = couleur)
         self.w.update()
@@ -242,7 +243,9 @@ class Pen(__Head_Navigator, __Item_Change_Buffer):
 _HN = __Head_Navigator
 _ICB = __Item_Change_Buffer
 
-        
+# =============================================================== GLOBALS FUNCTIONS ====================================================
+
+
 ###Permet de faire forward(x) au lieu de p.forward(x)###
 
 
@@ -250,6 +253,13 @@ _ICB = __Item_Change_Buffer
 #Ce texte sera ensuite compilé dans la zone "global" afin d'etre accessible directement.
 #L'interet de ces deux fonctions est de pouvoir ajouter des fonctionnalités sans modification
 #Et sans code tres repetitif;
+
+# ---------------------------------------------------------------- FUNCTION FORMAT ----------------------------------------------------------
+
+
+#Ce string est le modèle utilisé lors du format. Il définit une fonction avec un nom et des arguments
+# Test si l'objet est Null auquelle cas il l'initialise puis appelle la méthode voulue avec les arguments
+# Donné lors de l'appel initial
 
 func_format = """\
 def {name}({args}):
@@ -259,11 +269,21 @@ def {name}({args}):
         return {obj}.{name}({args_name})
     except: raise PAP_Error("Error", sys.exc_info())   
 """
+
+# ---------------------------------------------------------------- ARGUMENTS GETTING ----------------------------------------------------------
+
+
+# Cette fonction est un generateur qui prend une liste et yield chacune des valeurs de celle ci
+# sauf si c'est string auquel cas il lui ajoute des ["].
+
 def some_iter(l):
     for x in l:
-        if isinstance(x, str):
+        if isinstance(x, str): 
             yield '"'+x+'"'
         else: yield x
+
+#Fonction chiante a decrire
+
 def get_args_list(func):
 
     a, var, kwarg, b = inspect.getargspec(func)  #Output -> args
@@ -279,6 +299,16 @@ def get_args_list(func):
         temp="**%s" %(kwarg);output.append(temp);default.append(temp)
     return output, default
 
+
+# ---------------------------------------------------------------- FUNCTION CREATIONS ----------------------------------------------------------
+
+# Cette fonction recupere une liste de fonction et une classe.
+# Puis génère pour chaque méthode de la liste une fonction en global
+# Qui se refere a un objet créée pour l'occasion
+# Son nom par défaut est "_"+clss.__name__ :
+# EX : _Screen, _Pen, etc
+# Mais peut etre modifié
+
 def construct_func(funcs, clss, varName = None): #La classe entrée doit posséder un attribut __name__
     if varName == None: varName = "_"+clss.__name__
     debug(varName)
@@ -290,9 +320,14 @@ def construct_func(funcs, clss, varName = None): #La classe entrée doit posséd
                                 args_name = ",".join(args), cls=clss.__name__, obj=varName),
              globals())
 
-construct_func(__funcs_screen, Screen)
-construct_func(__funcs_pen, Pen)
+def init():
+    
+    construct_func(__funcs_screen, Screen)
+    construct_func(__funcs_pen, Pen)
 
 def reset():
     _Screen.reset()
     _Pen.reset()
+
+if __name__ == "__main__": init()
+else:init()
