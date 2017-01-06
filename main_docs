@@ -2,7 +2,7 @@
 
 Ce module s'appelle main par manque d'inspiration.
 Il devra etre renommé pour des raisons pratiques
-et empecher des *mot*.
+et empecher des problème compatibilité.
 
 ALL_FUNCS_NAME : liste réunissant tout les noms de fonctions
 
@@ -18,7 +18,7 @@ Screen : classe initialisée, soit sans arguments, et s'autogérera
          background: prend en argument une couleur et la met en
                      fond d'écran du canvas.
 
-                     #TODO: gestion RGB, francais
+                     #TODO: gestion RGB, traduction efficace des KeyWord en français avec BST(?) 
 
          getScreen: retourne l'écran
          update : rafraichit l'écran
@@ -31,11 +31,17 @@ Screen : classe initialisée, soit sans arguments, et s'autogérera
 Navigator : tete d'écriture
 
 
-            link : autre, couleur, epaisseur : prend un
+            link : autreNavigator, couleur, epaisseur : prend un
                    autre navigator en argument et trace
                    un trait entre les deux dans la couleur
                    et l'épaisseur spécifiée ou par défaut
             forward : x : avance de x pixel dans la direction
                           de Navigator
-
+            left : x : oriente de x degres vers la gauche
+            right : x: oriente de x degres vers la droite
+            
+            #DEPRECATED
+            rotate : x: same as right
+            
+            reset : : set to default positions with instance pos 0 0 by default
             
