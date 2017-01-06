@@ -11,7 +11,7 @@ def demo1():
             forward(l)
             right(170)
             time.sleep(0.01)
-        main._Pen.reset() #Not clear
+        pen.reset() #Should work ?
         while not empty(): undo(), time.sleep(0.01)
 
 
