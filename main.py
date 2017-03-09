@@ -9,7 +9,7 @@ else:
 
 __funcs_screen = ["background", "getScreen", "update", "c_empty", "c_undo"]
 __funcs_pen = ["cercle", "forward", "rotate", "left", "right", "undo",
-               "empty", "setColor"]
+               "empty", "setColor", "dirty_circle", "logo"]
 
 
 ALL_FUNCS_NAME = __funcs_screen + __funcs_pen + ["init", "reset"]
@@ -31,12 +31,6 @@ La fenêtre a été fermée. Les commandes sont désactivées.\
 ========================================================\
 ")
         return ""
-
-def debug(s, t="ALL"):
-    try:
-        if DEBUG[t]or DEBUG["ALL"]:
-            print(s)
-    except KeyError: print("Unknown type %s, passing debug" %(t)); print(s)
 
 
 
@@ -69,18 +63,25 @@ class Screen(Frame):
 
         # =============================================== CANVAS ==============================================
         
-        self.canvas = Canvas(self.getRoot(), bg="orange")
+        self.canvas = Canvas(self.getRoot(), bg=CANVAS_BACKGROUND)
         self.canvas.grid(sticky = W+E+N+S)
 
         self.getRoot().grid_rowconfigure(0, weight=1)
         self.getRoot().grid_columnconfigure(0, weight=1)
 
+        # =============================================== FULLSCREEN ==============================================
+
+        self.is_fullscreen = False
+        self.master.bind("<F11>", self.toogle_fullscreen)
         # ================================================ ID =================================================
         
         Screen.__count__ += 1
         self.id = "Screen_"+str(Screen.__count__)
 
 
+    def toogle_fullscreen(self, event=None):
+        self.is_fullscreen = not self.is_fullscreen 
+        self.master.wm_attributes("-fullscreen", self.is_fullscreen) 
     def getRoot(self):
         if self.isFrame: return self.frame
         else: return self.master
@@ -151,6 +152,8 @@ class __Item_Change_Buffer:
     def add(self, item):
         if len(self.buff)==self.size: self.buff.pop(0)
         self.buff.append(item)
+                             
+
 
 
 
@@ -203,6 +206,7 @@ class Pen(__Head_Navigator, __Item_Change_Buffer):
         self.w = getScreen()
         self.color = "black"
         debug(("got it,", self.w))
+                            
 
     def __setDefault__(self, kwargs, output, kw, trslt, dflt):
         if kw in kwargs: output[trslt]=kwargs[kw]
@@ -220,6 +224,20 @@ class Pen(__Head_Navigator, __Item_Change_Buffer):
                              fill=couleur, outline=contour, width=epaisseur, tag=self.id)
         self.w.update()
 
+    def dirty_circle(self, r, pas, couleur="", contour="black", epaisseur=LINE_WIDTH):
+        for x in range(pas):
+            _HN.right(self, 360/pas)
+            forward(r)
+        debug((r, couleur, contour, epaisseur, self.id), "DRAWING")
+        self.w.update()
+
+
+    def logo(self, taille, pas):
+        for x in range(pas):
+            _HN.right(self, 360/pas)
+            dirty_circle(taille, pas)
+        self.w.update()
+        
     def forward(self, x, epaisseur=LINE_WIDTH):
         
         self.buff.append(

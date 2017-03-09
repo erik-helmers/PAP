@@ -77,6 +77,9 @@ class PAPIDE:
       runmenu.add_command(label="Run module -> F5", command=self.executeCode) #Ici on lie Run module avec l'éxuction complete du code
       self.entry.bind("<F5>", self.executeCode) # Le boutton F5 est le raccourci pour Run module
 
+      runmenu.add_command(label="Run module -> F5", command=self.executeCode) #Idem pour la version fullscreen
+      self.entry.bind("<F6>", self.fullscreenExec) # Le boutton F6 est le raccourci pour Fullscreen
+
       menubar.add_cascade(label="Run", menu=runmenu)
 
       helpmenu = Menu(menubar, tearoff=0) #Toujours la meme chose
@@ -187,6 +190,13 @@ class PAPIDE:
       code = "".join([text]) #Au cas où, l'on devrait mettre
 
       exec(code, globals()) #On execute le code en contexte global.
+
+   def fullscreenExec(self, event=Nnone):
+
+      text = self.entry.get("1.0", END)
+      code = "".join([text])
+
       
+
 if __name__ == "__main__":
    PAPIDE()

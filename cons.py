@@ -1,3 +1,14 @@
+
+def debug(s, t="ALL"):
+    try:
+        if DEBUG[t]or DEBUG["ALL"]:
+            print(s)
+    except KeyError: print("%s : %s" %(t.upper(), s))
+
+
+
+CANVAS_BACKGROUND = "orange"
+
 FULLSCREEN = False
 LINE_WIDTH = 3
 DEBUG = {"ALL":True}
@@ -5,8 +16,8 @@ CONFIRM_QUIT = False
 
 LINE = 849
 
-COLORS =
-['snow', 'ghost white', 'white smoke',
+
+COLORS =['snow', 'ghost white', 'white smoke',
  'gainsboro', 'floral white', 'old lace',
     'linen', 'antique white', 'papaya whip',
  'blanched almond', 'bisque', 'peach puff',
